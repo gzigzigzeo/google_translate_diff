@@ -39,4 +39,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "google-api-client"
   spec.add_dependency "ox"
   spec.add_dependency "dry-initializer"
+  spec.add_dependency "punkt-segmenter"
 end
