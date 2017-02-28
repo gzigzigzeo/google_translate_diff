@@ -6,3 +6,7 @@ Style/StringLiterals:
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*

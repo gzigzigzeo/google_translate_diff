@@ -50,7 +50,6 @@ RSpec.describe GoogleTranslateTricks::Tokenizer do
 
   context "with some markup ending with script and non-ascii" do
     let(:source) { "альфа<span>браво</span>кило<script>js</script>" }
-
     let(:tokens) do
       [
         ["альфа", :text],
@@ -66,13 +65,16 @@ RSpec.describe GoogleTranslateTricks::Tokenizer do
   end
 
   context "sentences" do
-    let(:source) { "Киловольт. <span>Смеркалось. Ворчало. Кричало.</span>" }
+    let(:source) do
+      "! Киловольт. <span>Смеркалось.    Ворчало. Кричало.</span>"
+    end
 
     let(:tokens) do
       [
+        ["! ", :text],
         ["Киловольт. ", :text],
         ["<span>", :markup],
-        ["Смеркалось. ", :text],
+        ["Смеркалось.    ", :text],
         ["Ворчало. ", :text],
         ["Кричало.", :text],
         ["</span>", :markup]

@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.description = %(
     Google Translate API with cache, rate limiting and correct HTML handling
   )
-  spec.homepage = "https://github.com/gzigzigzeo"
+  spec.homepage = "https://github.com/gzigzigzeo/google_translate_tricks"
 
   if spec.respond_to?(:metadata)
     spec.metadata["allowed_push_host"] = "https://rubygems.org"

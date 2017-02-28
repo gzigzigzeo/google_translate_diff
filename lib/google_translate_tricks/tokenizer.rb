@@ -34,15 +34,18 @@ class GoogleTranslateTricks::Tokenizer < ::Ox::Sax
   end
 
   def sentences(value)
-    sentences =
+    boundaries =
       Punkt::SentenceTokenizer
       .new(value)
-      .sentences_from_text(value, output: :sentences_text)
+      .sentences_from_text(value)
 
-    return [[value, :text]] if sentences.size == 1
+    return [[value, :text]] if boundaries.size == 1
 
-    sentences.map.with_index do |s, index|
-      [index == sentences.size - 1 ? s : "#{s} ", :text]
+    boundaries.map.with_index do |(left, right), index|
+      next_boundary = boundaries[index + 1]
+      right = next_boundary[0] - 1 if next_boundary
+
+      [value[left..right], :text]
     end
   end
 
