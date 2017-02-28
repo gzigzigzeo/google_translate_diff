@@ -66,14 +66,13 @@ RSpec.describe GoogleTranslateTricks::Tokenizer do
   end
 
   context "sentences" do
-    let(:source) { "Киловольт. <span>Смеркалось. Журчало. Ворчало. Кричало.</span>" }
+    let(:source) { "Киловольт. <span>Смеркалось. Ворчало. Кричало.</span>" }
 
     let(:tokens) do
       [
         ["Киловольт. ", :text],
         ["<span>", :markup],
         ["Смеркалось. ", :text],
-        ["Журчало. ", :text],
         ["Ворчало. ", :text],
         ["Кричало.", :text],
         ["</span>", :markup]
