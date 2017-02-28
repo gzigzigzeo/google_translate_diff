@@ -51,7 +51,7 @@ class GoogleTranslateTricks::Tokenizer < ::Ox::Sax
   end
 
   # Splits very long text fragments by 2000 chars (it's an edge case,
-  # in case sentences in text not found, to fit parts into request).
+  # if sentences in text not found, to fit parts into request).
   def chunks(tokens)
     tokens.each_with_object([]) do |token, result|
       value = token.first
