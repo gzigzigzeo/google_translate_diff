@@ -9,12 +9,14 @@ require "google_translate_diff/linearizer"
 require "google_translate_diff/chunker"
 require "google_translate_diff/cache"
 require "google_translate_diff/redis_cache_store"
+require "google_translate_diff/redis_rate_limiter"
 require "google_translate_diff/request"
 
 module GoogleTranslateDiff
   class << self
     attr_accessor :api
     attr_accessor :cache_store
+    attr_accessor :rate_limiter
 
     def translate(*values, **options)
       options = options.dup

@@ -10,15 +10,15 @@ class GoogleTranslateDiff::RedisCacheStore
     redis { |redis| redis.mget(*keys) }
   end
 
-  def write(key, value)    
+  def write(key, value)
     redis { |redis| redis.setex(key, timeout, value) }
   end
 
   private
 
-  def redis(&block)
+  def redis
     connection_pool.with do |redis|
-      block.call(Redis::Namespace.new(namespace, redis: redis))
+      yield Redis::Namespace.new(namespace, redis: redis)
     end
   end
 end

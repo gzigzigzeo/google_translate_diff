@@ -91,6 +91,7 @@ class GoogleTranslateDiff::Request
 
   # Restores indexes for translated tokens
   # => { ..., "1_1" => "Horoshiy", 1_3 => "Malchik", ... }
+  # TODO: Restore spacing
   def text_tokens_translated
     @text_tokens_texts_translated ||=
       GoogleTranslateDiff::Linearizer.restore(
@@ -114,7 +115,7 @@ class GoogleTranslateDiff::Request
   # [..., "<b>Horoshiy</b> Malchik", ...]
   def texts_translated
     @texts_translated ||= tokens_translated.map do |group|
-      group.map(&:first).join
+      fix_ascii(group.map(&:first).join)
     end
   end
 
@@ -127,6 +128,7 @@ class GoogleTranslateDiff::Request
   end
 
   def call_api(values)
+    check_rate_limit(values)
     [GoogleTranslateDiff.api.translate(*values, **options)].flatten.map(&:text)
   end
 
@@ -134,20 +136,19 @@ class GoogleTranslateDiff::Request
     @cache ||= GoogleTranslateDiff::Cache.new(from, to)
   end
 
+  def check_rate_limit(values)
+    return if GoogleTranslateDiff.rate_limiter.nil?
+    size = values.map(&:size).sum
+  end
+
+  def fix_ascii(value)
+    value.gsub(/[\u0000-\u001F]/, " ")
+  end
   # -----
-
-  class Error < StandardError; end
-  class RateLimitExceeded < Error; end
-
-  RATELIMIT = 8000
-
-  private
 
   def check_rate_limit(texts)
     size = texts.map(&:size).sum
-
     raise RateLimitExceeded if rate_limit.count + size >= RATELIMIT
-
     rate_limit.add size
   end
 
