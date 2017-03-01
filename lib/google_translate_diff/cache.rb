@@ -26,7 +26,7 @@ class GoogleTranslateDiff::Cache
   end
 
   def key(value)
-    hash = Digest::MD5.hexdigest(value)
+    hash = Digest::MD5.hexdigest(value.strip) # No matter how much spaces
     "#{from}:#{to}:#{hash}"
   end
 
@@ -34,7 +34,3 @@ class GoogleTranslateDiff::Cache
     GoogleTranslateDiff.cache_store
   end
 end
-
-#read_multi
-#EbayMag2.redis { |redis| redis.mget(*keys) }
-#EbayMag2.redis { |redis| redis.setex(key(value), TIMEOUT, translation) }

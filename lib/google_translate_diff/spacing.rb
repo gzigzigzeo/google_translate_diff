@@ -1,25 +1,21 @@
 class GoogleTranslateDiff::Spacing
-  extend Dry::Initializer::Mixin
-
-  param :left
-  param :right
-
-  def call
-    right.map.with_index do |value, index|
-      source = left[index]
-      spaces(leading(source)) + value + spaces(trailing(source))
+  class << self
+    def restore(left, right)
+      spaces(leading(left)) + right.strip + spaces(trailing(left))
     end
-  end
 
-  def spaces(count)
-    ([" "] * count).join
-  end
+    private
 
-  def leading(value)
-    value.size - value.gsub(/^[[:space:]]+/ui, "").size
-  end
+    def spaces(count)
+      ([" "] * count).join
+    end
 
-  def trailing(value)
-    value.size - value.gsub(/[[:space:]]+$/ui, "").size
+    def leading(value)
+      value.size - value.gsub(/^[[:space:]]+/ui, "").size
+    end
+
+    def trailing(value)
+      value.size - value.gsub(/[[:space:]]+$/ui, "").size
+    end
   end
 end

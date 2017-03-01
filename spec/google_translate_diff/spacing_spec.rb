@@ -1,10 +1,12 @@
 require "spec_helper"
 
 RSpec.describe GoogleTranslateDiff::Spacing do
-  subject { described_class.new(left, right).call }
+  subject {  }
 
-  let(:left)  { ["a", "    b", "   c   "] }
-  let(:right) { %w(А Б В) }
-
-  it { is_expected.to eq(["А", "    Б", "   В   "]) }
+  [
+    ["a   ", "А", "А   "],
+    ["  b ", "Б", "  Б "]
+  ].each do |(left, right, result)|
+    it { expect(described_class.restore(left, right)).to eq(result) }
+  end
 end

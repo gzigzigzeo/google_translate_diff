@@ -17,16 +17,6 @@ class GoogleTranslateDiff::Request
 
     return values if from == to || values.empty?
 
-    puts "TEXTS:                  #{texts.inspect}"
-    puts "TOKENS:                 #{tokens.inspect}"
-    puts "TEXT_TOKENS:            #{text_tokens.inspect}"
-    puts "TEXT_TOKENS DATA:       #{text_tokens_texts.inspect}"
-    puts "CHUNKS:                 #{chunks.inspect}"
-    puts "TRANSLATED CHUNKS:      #{chunks_translated.inspect}"
-    puts "TEXT_TOKENS_TRANSLATED: #{text_tokens_translated.inspect}"
-    puts "TOKENS_TRANSLATED:      #{tokens_translated.inspect}"
-    puts "TEXTS_TRANSLATED:       #{texts_translated.inspect}"
-
     translation
   end
 
@@ -91,7 +81,6 @@ class GoogleTranslateDiff::Request
 
   # Restores indexes for translated tokens
   # => { ..., "1_1" => "Horoshiy", 1_3 => "Malchik", ... }
-  # TODO: Restore spacing
   def text_tokens_translated
     @text_tokens_texts_translated ||=
       GoogleTranslateDiff::Linearizer.restore(
@@ -100,15 +89,22 @@ class GoogleTranslateDiff::Request
       )
   end
 
-  # Restores tokens translated
+  # Restores tokens translated + adds same spacing as in source token
   # => [[..., [ "Horoshiy", :text ], ...]]
+  # rubocop:disable Metrics/AbcSize
   def tokens_translated
     @tokens_translated ||= tokens.dup.tap do |tokens|
       text_tokens_translated.each do |index, value|
         group_index, index = index.split("_")
-        tokens[group_index.to_i][index.to_i] = [value, :text]
+        tokens[group_index.to_i][index.to_i][0] =
+          restore_spacing(tokens[group_index.to_i][index.to_i][0], value)
       end
     end
+  end
+  # rubocop:enable Metrics/AbcSize
+
+  def restore_spacing(source_value, value)
+    GoogleTranslateDiff::Spacing.restore(source_value, value)
   end
 
   # Restores texts from tokens
