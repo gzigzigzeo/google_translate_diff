@@ -61,21 +61,13 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     )
   end
 
-  CHUNK_SIZE = 2000
-end
-
-=begin
-def chunks(tokens)
-  # URI.encode(text).size + 3
-  tokens.each_with_object([]) do |token, result|
-    value = token.first
-    if value.length <= CHUNK_SIZE
-      result << token
-    else
-      value.split("").each_slice(CHUNK_SIZE).map do |chunk|
-        result << [chunk.join, :text]
+  class << self
+    def tokenize(value)
+      tokenizer = new(value).tap do |h|
+        Ox.sax_parse(h, StringIO.new(value))
+        h.cut_last_token
       end
+      tokenizer.tokens
     end
   end
 end
-=end

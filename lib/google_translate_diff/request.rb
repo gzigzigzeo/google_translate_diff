@@ -17,6 +17,12 @@ class GoogleTranslateDiff::Request
 
     return values if from == to || values.empty?
 
+    puts "DATA: #{data.inspect}"
+    puts "TOKENS: #{tokens.inspect}"
+    puts "TEXT_TOKENS: #{text_tokens.inspect}"
+
+    #puts "CHUNKS: #{chunks.inspect}"
+
     translation
   end
 
@@ -26,13 +32,22 @@ class GoogleTranslateDiff::Request
     @data ||= GoogleTranslateDiff::Linearizer.linearize(values)
   end
 
-  def translation
-    @translation ||=
-      GoogleTranslateDiff::Linearizer.restore(values, result.flatten)
+  def tokens
+    @tokens ||= data.each_with_object([]) do |value, tokens|
+      tokens.concat(GoogleTranslateDiff::Tokenizer.tokenize(value))
+    end
+  end
+
+  def text_tokens
+    @text_tokens ||= extract_text_tokens.compact.to_h
+  end
+
+  def text_tokens_data
+    @text_tokens_data ||= GoogleTranslateDiff::Linearizer.linearize(text_tokens)
   end
 
   def chunks
-    @chunks ||= GoogleTranslateDiff::Chunker.new(data).call
+    @chunks ||= GoogleTranslateDiff::Chunker.new(text_tokens_data).call
   end
 
   def result
@@ -46,8 +61,19 @@ class GoogleTranslateDiff::Request
     end
   end
 
+  def translation
+    @translation ||=
+      GoogleTranslateDiff::Linearizer.restore(values, result.flatten)
+  end
+
+  def extract_text_tokens
+    tokens.map.with_index do |(value, type), index|
+      [index.to_s, value] if type == :text
+    end
+  end
+
   def call_api(values)
-    GoogleTranslateDiff.api.translate(*values, **options).map(&:text)
+    [GoogleTranslateDiff.api.translate(*values, **options)].flatten.map(&:text)
   end
 
   def cache
