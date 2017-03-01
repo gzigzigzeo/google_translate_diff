@@ -13,8 +13,8 @@ class GoogleTranslateDiff::Cache
   end
 
   def store(values, cached, updates)
-    values.map.with_index do |value, index|
-      value || store_value(cached[index], updates.shift)
+    cached.map.with_index do |value, index|
+      value || store_value(values[index], updates.shift)
     end
   end
 
@@ -27,7 +27,7 @@ class GoogleTranslateDiff::Cache
 
   def key(value)
     hash = Digest::MD5.hexdigest(value)
-    "#{@source_language}:#{@target_language}:#{hash}"
+    "#{from}:#{to}:#{hash}"
   end
 
   def cache_store

@@ -38,10 +38,16 @@ class GoogleTranslateDiff::Request
   def result
     @result ||= chunks.map do |chunk|
       cached, missing = cache.cached_and_missing(chunk)
-      missing =
-        GoogleTranslateDiff.api.translate(*missing, **options).map(&:text)
-      cache.store(chunk, cached, missing)
+      if missing.empty?
+        chunk
+      else
+        cache.store(chunk, cached, call_api(missing))
+      end
     end
+  end
+
+  def call_api(values)
+    GoogleTranslateDiff.api.translate(*values, **options).map(&:text)
   end
 
   def cache
@@ -56,20 +62,6 @@ class GoogleTranslateDiff::Request
   RATELIMIT = 8000
 
   private
-
-  def translate_texts(texts)
-    return texts if texts.blank?
-
-    group_texts(texts).each_with_object [] do |source, results|
-      pattern, missing = cache.hit(source)
-
-      check_rate_limit(missing)
-
-      translated = list_translations(missing)
-      value = cache.store(source, pattern, translated)
-      results.concat(value)
-    end
-  end
 
   def check_rate_limit(texts)
     size = texts.map(&:size).sum
