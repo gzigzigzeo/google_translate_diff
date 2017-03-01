@@ -1,9 +1,26 @@
 class Translator::Request
   extend Dry::Initializer::Mixin
-  include Translator::Service
 
-  param :source_language
-  param :target_language
+  param :from
+  param :to
+  param :values
+  param :options
+
+  def call
+    return values if from == to
+    # check rate limit
+
+  end
+
+  private
+
+  def data
+    @data ||= GoogleTranslateDiff::Linearizer.linearize(values)
+  end
+
+  def chunks
+    @chunks ||= GoogleTranslateDiff::Chunker.new(data).call
+  end
 
   class Error < StandardError; end
   class RateLimitExceeded < Error; end

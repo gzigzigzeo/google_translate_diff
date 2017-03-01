@@ -5,7 +5,7 @@ class GoogleTranslateDiff::Linearizer
       when Hash then
         struct.each { |_k, v| linearize(v, array) }
       when Array then
-        struct.each { |v|     linearize(v, array) }
+        struct.each { |v| linearize(v, array) }
       else
         array << struct
       end
