@@ -23,7 +23,7 @@ class GoogleTranslateTricks::Tokenizer < ::Ox::Sax
     return if value.strip.empty?
 
     token.tap { |t| @tokens << [fix_utf(t), :markup] if t }
-    @tokens.concat(chunks(sentences(value)))
+    @tokens.concat(sentences(value))
 
     @prev = @pos + value.bytesize
   end
@@ -50,21 +50,6 @@ class GoogleTranslateTricks::Tokenizer < ::Ox::Sax
     end
   end
 
-  # Splits very long text fragments by 2000 chars (it's an edge case,
-  # if sentences in text not found, to fit parts into request).
-  def chunks(tokens)
-    tokens.each_with_object([]) do |token, result|
-      value = token.first
-      if value.length <= CHUNK_SIZE
-        result << token
-      else
-        value.split("").each_slice(CHUNK_SIZE).map do |chunk|
-          result << [chunk.join, :text]
-        end
-      end
-    end
-  end
-
   def cut_last_token
     last_token = fix_utf(@source.byteslice((@prev - 1)..-1))
     @tokens << [last_token, :markup] if last_token != ""
@@ -78,3 +63,19 @@ class GoogleTranslateTricks::Tokenizer < ::Ox::Sax
 
   CHUNK_SIZE = 2000
 end
+
+=begin
+def chunks(tokens)
+  # URI.encode(text).size + 3
+  tokens.each_with_object([]) do |token, result|
+    value = token.first
+    if value.length <= CHUNK_SIZE
+      result << token
+    else
+      value.split("").each_slice(CHUNK_SIZE).map do |chunk|
+        result << [chunk.join, :text]
+      end
+    end
+  end
+end
+=end

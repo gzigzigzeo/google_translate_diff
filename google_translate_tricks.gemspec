@@ -3,6 +3,7 @@ lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "google_translate_tricks/version"
 
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   spec.name          = "google_translate_tricks"
   spec.version       = GoogleTranslateTricks::VERSION
@@ -10,10 +11,10 @@ Gem::Specification.new do |spec|
   spec.email         = ["gzigzigzeo@evilmartians.com"]
 
   spec.summary       = %(
-    Google Translate API with cache, rate limiting and correct HTML handling
+Google Translate API wrapper translates only changed parts of big texts.
   )
   spec.description = %(
-    Google Translate API with cache, rate limiting and correct HTML handling
+Google Translate API wrapper translates only changed parts of big texts.
   )
   spec.homepage = "https://github.com/gzigzigzeo/google_translate_tricks"
 
@@ -36,8 +37,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop"
 
-  spec.add_dependency "google-api-client"
+  spec.add_dependency "google-cloud-translate"
   spec.add_dependency "ox"
   spec.add_dependency "dry-initializer"
   spec.add_dependency "punkt-segmenter"
 end
+# rubocop:enable Metrics/BlockLength

@@ -83,16 +83,4 @@ RSpec.describe GoogleTranslateTricks::Tokenizer do
 
     it_behaves_like "tokenizer"
   end
-
-  context "very long unseparated text" do
-    let(:source) { (["a"] * 1000).join + (["b"] * 2000).join }
-    let(:tokens) do
-      [
-        [(["a"] * 1000).join + (["b"] * 1000).join, :text],
-        [(["b"] * 1000).join, :text]
-      ]
-    end
-
-    it_behaves_like "tokenizer"
-  end
 end
