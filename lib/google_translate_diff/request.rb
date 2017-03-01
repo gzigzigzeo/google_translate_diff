@@ -1,17 +1,19 @@
 class GoogleTranslateDiff::Request
   extend Dry::Initializer::Mixin
+  extend Forwardable
 
   param :from
   param :to
   param :values
   param :options
 
-  def call
-    unless GoogleTranslateDiff.api
-      raise "Assign GoogleTranslateDiff.api before calling ::translate"
-    end
+  def_delegators :GoogleTranslateDiff, :api, :cache_store, :rate_limiter
+  def_delegators :"GoogleTranslateDiff::Linearizer", :linearize, :restore
 
-    unless GoogleTranslateDiff.cache_store
+  def call
+    raise "Assign GoogleTranslateDiff.api before calling ::translate" unless api
+
+    unless cache_store
       raise "Assign GoogleTranslateDiff.cache_store before calling ::translate"
     end
 
@@ -27,7 +29,7 @@ class GoogleTranslateDiff::Request
   #
   # #values might be something like { name: "Name", bio: "<b>Good</b> boy" }
   def texts
-    @texts ||= GoogleTranslateDiff::Linearizer.linearize(values)
+    @texts ||= linearize(values)
   end
 
   # Converts each array item to token list
@@ -55,8 +57,7 @@ class GoogleTranslateDiff::Request
   # Extracts values from text tokens
   # => [ ..., "Good", "Boy", ... ]
   def text_tokens_texts
-    @text_tokens_texts ||=
-      GoogleTranslateDiff::Linearizer.linearize(text_tokens)
+    @text_tokens_texts ||= linearize(text_tokens)
   end
 
   # Splits things requires translations to per-request chunks
@@ -83,10 +84,7 @@ class GoogleTranslateDiff::Request
   # => { ..., "1_1" => "Horoshiy", 1_3 => "Malchik", ... }
   def text_tokens_translated
     @text_tokens_texts_translated ||=
-      GoogleTranslateDiff::Linearizer.restore(
-        text_tokens,
-        chunks_translated.flatten
-      )
+      restore(text_tokens, chunks_translated.flatten)
   end
 
   # Restores tokens translated + adds same spacing as in source token
@@ -117,15 +115,12 @@ class GoogleTranslateDiff::Request
 
   # Final result
   def translation
-    @translation ||=
-      GoogleTranslateDiff::Linearizer.restore(
-        values, texts_translated
-      )
+    @translation ||= restore(values, texts_translated)
   end
 
   def call_api(values)
     check_rate_limit(values)
-    [GoogleTranslateDiff.api.translate(*values, **options)].flatten.map(&:text)
+    [api.translate(*values, **options)].flatten.map(&:text)
   end
 
   def cache
@@ -133,9 +128,9 @@ class GoogleTranslateDiff::Request
   end
 
   def check_rate_limit(values)
-    return if GoogleTranslateDiff.rate_limiter.nil?
+    return if rate_limiter.nil?
     size = values.map(&:size).inject(0) { |sum, x| sum + x }
-    GoogleTranslateDiff.rate_limiter.check(size)
+    rate_limiter.check(size)
   end
 
   def fix_ascii(value)
