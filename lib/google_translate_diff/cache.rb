@@ -1,30 +1,40 @@
 class GoogleTranslateDiff::Cache
   extend Dry::Initializer::Mixin
 
-  param :source_language
-  param :target_language
+  param :from
+  param :to
 
-  def hit(values)
+  def cached_and_missing(values)
     keys = values.map { |v| key(v) }
-    pattern = EbayMag2.redis { |redis| redis.mget(*keys) }
+    pattern = cache_store.read_multi(keys)
     missing = values.map.with_index { |v, i| v if pattern[i].nil? }.compact
 
     [pattern, missing]
   end
 
-  def store(source, pattern, translated)
-    pattern.map.with_index do |value, index|
-      value || store_value(source[index], translated.shift)
+  def store(values, cached, updates)
+    values.map.with_index do |value, index|
+      value || store_value(cached[index], updates.shift)
     end
   end
 
+  private
+
   def store_value(value, translation)
-    EbayMag2.redis { |redis| redis.setex(key(value), TIMEOUT, translation) }
+    cache_store.write(key(value), translation)
     translation
   end
 
   def key(value)
     hash = Digest::MD5.hexdigest(value)
-    "translate:#{@source_language}:#{@target_language}:#{hash}"
+    "#{@source_language}:#{@target_language}:#{hash}"
+  end
+
+  def cache_store
+    GoogleTranslateDiff.cache_store
   end
 end
+
+#read_multi
+#EbayMag2.redis { |redis| redis.mget(*keys) }
+#EbayMag2.redis { |redis| redis.setex(key(value), TIMEOUT, translation) }
