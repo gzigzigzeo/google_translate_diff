@@ -41,6 +41,7 @@ of big texts.
   spec.add_development_dependency "redis"
   spec.add_development_dependency "connection_pool"
   spec.add_development_dependency "redis-namespace"
+  spec.add_development_dependency "ratelimit"
 
   spec.add_dependency "google-cloud-translate"
   spec.add_dependency "ox"

@@ -138,23 +138,11 @@ class GoogleTranslateDiff::Request
 
   def check_rate_limit(values)
     return if GoogleTranslateDiff.rate_limiter.nil?
-    size = values.map(&:size).sum
+    size = values.map(&:size).inject(0) { |sum, x| sum + x }
+    GoogleTranslateDiff.rate_limiter.check(size)
   end
 
   def fix_ascii(value)
     value.gsub(/[\u0000-\u001F]/, " ")
-  end
-  # -----
-
-  def check_rate_limit(texts)
-    size = texts.map(&:size).sum
-    raise RateLimitExceeded if rate_limit.count + size >= RATELIMIT
-    rate_limit.add size
-  end
-
-  def rate_limit
-    @rate_limit ||= Redis::Ratelimit.new(
-      "translator", interval: 100, bucket_count: 10, bucket_size: 15
-    )
   end
 end

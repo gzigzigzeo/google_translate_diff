@@ -28,4 +28,6 @@ module GoogleTranslateDiff
       Request.new(from, to, values, options).call
     end
   end
+
+  CACHE_NAMESPACE = "google-translate-diff".freeze
 end

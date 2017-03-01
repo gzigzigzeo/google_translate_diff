@@ -4,7 +4,7 @@ class GoogleTranslateDiff::RedisCacheStore
   param :connection_pool
 
   option :timeout, default: proc { 60 * 60 * 24 * 7 }
-  option :namespace, default: proc { "google-translate-diff" }
+  option :namespace, default: proc { GoogleTranslateDiff::CACHE_NAMESPACE }
 
   def read_multi(keys)
     redis { |redis| redis.mget(*keys) }
