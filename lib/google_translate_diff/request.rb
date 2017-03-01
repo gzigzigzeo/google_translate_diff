@@ -17,19 +17,17 @@ class GoogleTranslateDiff::Request
 
     return values if from == to || values.empty?
 
-    puts "TEXTS:            #{texts.inspect}"
-    puts "TOKENS:           #{tokens.inspect}"
-    puts "TEXT_TOKENS:      #{text_tokens.inspect}"
-    puts "TEXT_TOKENS DATA: #{text_tokens_texts.inspect}"
-    puts "CHUNKS:           #{chunks.inspect}"
-    puts "TRANSLATED CHUNKS: #{chunks_translated.inspect}"
+    puts "TEXTS:                  #{texts.inspect}"
+    puts "TOKENS:                 #{tokens.inspect}"
+    puts "TEXT_TOKENS:            #{text_tokens.inspect}"
+    puts "TEXT_TOKENS DATA:       #{text_tokens_texts.inspect}"
+    puts "CHUNKS:                 #{chunks.inspect}"
+    puts "TRANSLATED CHUNKS:      #{chunks_translated.inspect}"
     puts "TEXT_TOKENS_TRANSLATED: #{text_tokens_translated.inspect}"
-    #puts "text_tokens_data_translated: #{text_tokens_data_translated.inspect}"
-    #puts "TOKENS TRANSLATED: #{tokens_translated.inspect}"
+    puts "TOKENS_TRANSLATED:      #{tokens_translated.inspect}"
+    puts "TEXTS_TRANSLATED:       #{texts_translated.inspect}"
 
-    #puts "CHUNKS: #{chunks.inspect}"
-
-    #translation
+    translation
   end
 
   private
@@ -54,6 +52,14 @@ class GoogleTranslateDiff::Request
   # => { ..., "1_1" => "Good", 1_3 => "Boy", ... }
   def text_tokens
     @text_tokens ||= extract_text_tokens.to_h
+  end
+
+  def extract_text_tokens
+    tokens.each_with_object([]).with_index do |(group, result), group_index|
+      group.each_with_index do |(value, type), index|
+        result << ["#{group_index}_#{index}", value] if type == :text
+      end
+    end
   end
 
   # Extracts values from text tokens
@@ -94,35 +100,30 @@ class GoogleTranslateDiff::Request
   end
 
   # Restores tokens translated
+  # => [[..., [ "Horoshiy", :text ], ...]]
   def tokens_translated
-
-  end
-
-  def tokens_translated
-    @tokens_translated ||=
-      tokens
-      .map
-      .with_index do |(value, type), index|
-        [text_tokens_data_translated[index.to_s] || value, type]
-      end
-  end
-
-
-=begin
-  def tokens_data_translated
-    text_tokens.each do |index, value|
-      tokens[index.to_i] = [value, :text]
-    end
-    tokens.map(&:first).join
-  end
-=end
-
-  def extract_text_tokens
-    tokens.each_with_object([]).with_index do |(group, result), group_index|
-      group.each_with_index do |(value, type), index|
-        result << ["#{group_index}_#{index}", value] if type == :text
+    @tokens_translated ||= tokens.dup.tap do |tokens|
+      text_tokens_translated.each do |index, value|
+        group_index, index = index.split("_")
+        tokens[group_index.to_i][index.to_i] = [value, :text]
       end
     end
+  end
+
+  # Restores texts from tokens
+  # [..., "<b>Horoshiy</b> Malchik", ...]
+  def texts_translated
+    @texts_translated ||= tokens_translated.map do |group|
+      group.map(&:first).join
+    end
+  end
+
+  # Final result
+  def translation
+    @translation ||=
+      GoogleTranslateDiff::Linearizer.restore(
+        values, texts_translated
+      )
   end
 
   def call_api(values)
