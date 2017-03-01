@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe GoogleTranslateTricks::Tokenizer do
+RSpec.describe GoogleTranslateDiff::Tokenizer do
   subject do
     described_class.new(source).tap do |h|
       Ox.sax_parse(h, StringIO.new(source))

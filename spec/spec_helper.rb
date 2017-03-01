@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "google_translate_tricks"
+require "google_translate_diff"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

@@ -1,4 +1,4 @@
-class GoogleTranslateTricks::Tokenizer < ::Ox::Sax
+class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   def initialize(source)
     @pos = nil
     @prev = 1

@@ -1,22 +1,24 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "google_translate_tricks/version"
+require "google_translate_diff/version"
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
-  spec.name          = "google_translate_tricks"
-  spec.version       = GoogleTranslateTricks::VERSION
+  spec.name          = "google_translate_diff"
+  spec.version       = GoogleTranslateDiff::VERSION
   spec.authors       = ["Victor Sokolov"]
   spec.email         = ["gzigzigzeo@evilmartians.com"]
 
   spec.summary       = %(
-Google Translate API wrapper translates only changed parts of big texts.
+Google Translate API wrapper translates only changed parts between revisions of
+big texts.
   )
   spec.description = %(
-Google Translate API wrapper translates only changed parts of big texts.
+Google Translate API wrapper translates only changed parts between revisions of
+big texts.
   )
-  spec.homepage = "https://github.com/gzigzigzeo/google_translate_tricks"
+  spec.homepage = "https://github.com/gzigzigzeo/google_translate_diff"
 
   if spec.respond_to?(:metadata)
     spec.metadata["allowed_push_host"] = "https://rubygems.org"
