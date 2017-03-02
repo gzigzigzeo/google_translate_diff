@@ -2,6 +2,10 @@
 
 Google Translate API wrapper helps to translate only changes between revisions of long texts.
 
+<a href="https://evilmartians.com/?utm_source=sidekiq-grouping-gem">
+<img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54">
+</a>
+
 ## Use case
 
 Assume your project contains a significant amount of products descriptions which:
