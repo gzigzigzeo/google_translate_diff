@@ -1,7 +1,7 @@
 require "bundler/setup"
 require "simplecov"
 
-Simplecov.start
+SimpleCov.start
 
 require "google_translate_diff"
 
