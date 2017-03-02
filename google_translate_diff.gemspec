@@ -11,12 +11,13 @@ Gem::Specification.new do |spec|
   spec.email         = ["gzigzigzeo@evilmartians.com"]
 
   spec.summary       = %(
-Google Translate API wrapper helps to translate only changes between revisions
-of big texts.
+Google Translate API wrapper for Ruby which helps to translate only changes
+between revisions of long texts.
+
   )
   spec.description = %(
-Google Translate API wrapper helps to translate only changes between revisions
-of big texts.
+Google Translate API wrapper for Ruby which helps to translate only changes
+between revisions of long texts.
   )
   spec.homepage = "https://github.com/gzigzigzeo/google_translate_diff"
 
