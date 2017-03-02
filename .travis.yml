@@ -3,3 +3,10 @@ sudo: false
 rvm:
   - 2.3.3
 cache: bundler
+
+addons:
+  code_climate:
+    repo_token: "49b1afe0298c521f3d73377db0d20d1d4b9749ad533126bf3ed105fe9612eb0e"
+    
+after_success:
+  - bundle exec codeclimate-test-reporter

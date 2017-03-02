@@ -39,6 +39,8 @@ between revisions of long texts.
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "codeclimate-test-reporter", "~> 1.0.0"
+  spec.add_development_dependency "simplecov"
 
   spec.add_dependency "google-cloud-translate"
   spec.add_dependency "ox"

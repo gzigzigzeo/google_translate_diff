@@ -1,4 +1,8 @@
 require "bundler/setup"
+require "simplecov"
+
+Simplecov.start
+
 require "google_translate_diff"
 
 RSpec.configure do |config|
