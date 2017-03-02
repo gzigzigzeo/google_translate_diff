@@ -2,8 +2,6 @@ class GoogleTranslateDiff::Request
   extend Dry::Initializer::Mixin
   extend Forwardable
 
-  param :from
-  param :to
   param :values
   param :options
 
@@ -11,11 +9,7 @@ class GoogleTranslateDiff::Request
   def_delegators :"GoogleTranslateDiff::Linearizer", :linearize, :restore
 
   def call
-    raise "Assign GoogleTranslateDiff.api before calling ::translate" unless api
-
-    unless cache_store
-      raise "Assign GoogleTranslateDiff.cache_store before calling ::translate"
-    end
+    validate_globals
 
     return values if from == to || values.empty?
 
@@ -23,6 +17,20 @@ class GoogleTranslateDiff::Request
   end
 
   private
+
+  def from
+    @from ||= options.fetch(:from)
+  end
+
+  def to
+    @to ||= options.fetch(:to)
+  end
+
+  def validate_globals
+    raise "Set GoogleTranslateDiff.api before calling ::translate" unless api
+    return if cache_store
+    raise "Set GoogleTranslateDiff.cache_store before calling ::translate"
+  end
 
   # Extracts flat text array
   # => "Name", "<b>Good</b> boy"
@@ -57,7 +65,7 @@ class GoogleTranslateDiff::Request
   # Extracts values from text tokens
   # => [ ..., "Good", "Boy", ... ]
   def text_tokens_texts
-    @text_tokens_texts ||= linearize(text_tokens)
+    @text_tokens_texts ||= linearize(text_tokens).map(&:strip)
   end
 
   # Splits things requires translations to per-request chunks

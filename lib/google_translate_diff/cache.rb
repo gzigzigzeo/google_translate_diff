@@ -6,10 +6,10 @@ class GoogleTranslateDiff::Cache
 
   def cached_and_missing(values)
     keys = values.map { |v| key(v) }
-    pattern = cache_store.read_multi(keys)
-    missing = values.map.with_index { |v, i| v if pattern[i].nil? }.compact
+    cached = cache_store.read_multi(keys)
+    missing = values.map.with_index { |v, i| v if cached[i].nil? }.compact
 
-    [pattern, missing]
+    [cached, missing]
   end
 
   def store(values, cached, updates)

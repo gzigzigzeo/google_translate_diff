@@ -3,7 +3,7 @@ class GoogleTranslateDiff::Spacing
   class << self
     # GoogleTranslateDiff::Spacing.restore("  a ", "Z") # => "   Z "
     def restore(left, right)
-      spaces(leading(left)) + right.strip + spaces(trailing(left))
+      leading(left) + right.strip + trailing(left)
     end
 
     private
@@ -13,11 +13,15 @@ class GoogleTranslateDiff::Spacing
     end
 
     def leading(value)
-      value.size - value.gsub(/^[[:space:]]+/ui, "").size
+      pos = value =~ /[^[:space:]]+/ui
+      return "" if pos.zero?
+      value[0..(pos - 1)]
     end
 
     def trailing(value)
-      value.size - value.gsub(/[[:space:]]+$/ui, "").size
+      pos = value =~ /[[:space:]]+$/ui
+      return "" if pos.nil?
+      value[pos..-1]
     end
   end
 end

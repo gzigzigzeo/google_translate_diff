@@ -1,8 +1,6 @@
 require "spec_helper"
 
 RSpec.describe GoogleTranslateDiff::Spacing do
-  subject {  }
-
   [
     ["a   ", "А", "А   "],
     ["  b ", "Б", "  Б "]

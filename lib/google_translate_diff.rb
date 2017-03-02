@@ -21,12 +21,7 @@ module GoogleTranslateDiff
 
     def translate(*values, **options)
       options = options.dup
-      from = options.fetch(:from)
-      to = options.fetch(:to)
-
-      raise ArgumentError, ":from and :to must be specified" unless from && to
-
-      Request.new(from, to, values, options).call
+      Request.new(values, options).call
     end
   end
 
