@@ -19,9 +19,8 @@ module GoogleTranslateDiff
     attr_accessor :cache_store
     attr_accessor :rate_limiter
 
-    def translate(*values, **options)
-      options = options.dup
-      Request.new(values, options).call
+    def translate(*args)
+      Request.new(*args).call
     end
   end
 
