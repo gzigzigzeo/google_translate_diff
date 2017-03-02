@@ -6,6 +6,12 @@ Google Translate API wrapper helps to translate only changes between revisions o
 <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54">
 </a>
 
+[![Build Status](https://travis-ci.org/gzigzigzeo/google_translate_diff.svg?branch=master)](https://travis-ci.org/gzigzigzeo/google_translate_diff)
+
+[![Code Climate](https://codeclimate.com/github/gzigzigzeo/google_translate_diff/badges/gpa.svg)](https://codeclimate.com/github/gzigzigzeo/google_translate_diff)
+
+[![Test Coverage](https://codeclimate.com/github/gzigzigzeo/google_translate_diff/badges/coverage.svg)](https://codeclimate.com/github/gzigzigzeo/google_translate_diff/coverage)
+
 ## Use case
 
 Assume your project contains a significant amount of products descriptions which:
