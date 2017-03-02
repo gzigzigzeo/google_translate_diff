@@ -1,17 +1,17 @@
 # GoogleTranslateDiff
 
-Google Translate API wrapper translates only changes between revisions of big texts.
+Google Translate API wrapper helps to translate only changes between revisions of long texts.
 
 ## Use case
 
-Assume your project contains large amount of products descriptions which:
+Assume your project contains a significant amount of products descriptions which:
 - Require retranslation each time user edits them.
-- Have a lot equal parts (like return policy).
+- Have a lot of equal parts (like return policy).
 - Change frequently.
 
-If your user changes a single word within large description you will be charged for retranslation of the whole text.
+If your user changes a single word within the long description, you will be charged for the retranslation of the whole text.
 
-Much better approach is to try to translate every repeated structural element (sentence) in your text array just once to save money. This gem helps to make it done.
+Much better approach is to try to translate every repeated structural element (sentence) in your texts array just once to save money. This gem helps to make it done.
 
 ## Installation
 
@@ -64,8 +64,8 @@ GoogleTranslateDiff.translate("test translations", from: "en", to: "es")
 ## How it works
 
 - Text nodes are extracted from HTML.
-- Every text node is splitted to sentences (using `punkt-segmenter` gem).
-- Cache is checked for presence of each sentence (using language couple and hash of string).
+- Every text node is split into sentences (using `punkt-segmenter` gem).
+- Cache is checked for the presence of each sentence (using language couple and a hash of string).
 - Missing sentences are translated via API and cached.
 - Original HTML is recombined from translations and cache data.
 
