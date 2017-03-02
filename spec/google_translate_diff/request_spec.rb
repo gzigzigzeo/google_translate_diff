@@ -56,22 +56,22 @@ RSpec.describe GoogleTranslateDiff::Request do
         title: "One",
         more: {
           description: "<b>Black</b>",
-          color: %(So   <font size='35'><script>One</script>
-<!-- Test -->Red</font> that)
+          color: %(So   <font size='35'><script>One</script><!-- Test -->Red
+</font> that)
         }
       }
     end
     let(:options) { { from: :en, to: :ru } }
     let(:api_request) { %w(One Black So Red that) }
-    let(:api_response) { %w(Один Черный Что Красный что) }
+    let(:api_response) { %w(Один Черный Что Кра что) }
 
     it do
       is_expected.to eq(
         title: "Один",
         more: {
           description: "<b>Черный</b>",
-          color: %(Что   <font size='35'><script>One</script>
-<!-- Test -->Красный</font> что)
+          color: %(Что   <font size='35'><script>One</script><!-- Test -->Кра
+</font> что)
         }
       )
     end

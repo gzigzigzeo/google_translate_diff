@@ -117,7 +117,7 @@ class GoogleTranslateDiff::Request
   # [..., "<b>Horoshiy</b> Malchik", ...]
   def texts_translated
     @texts_translated ||= tokens_translated.map do |group|
-      fix_ascii(group.map(&:first).join)
+      group.map { |value, type| type == :text ? value : fix_ascii(value) }.join
     end
   end
 
@@ -141,6 +141,7 @@ class GoogleTranslateDiff::Request
     rate_limiter.check(size)
   end
 
+  # Markup should not contain control characters
   def fix_ascii(value)
     value.gsub(/[\u0000-\u001F]/, " ")
   end
