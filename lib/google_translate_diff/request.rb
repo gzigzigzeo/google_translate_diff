@@ -65,7 +65,7 @@ class GoogleTranslateDiff::Request
   # Extracts values from text tokens
   # => [ ..., "Good", "Boy", ... ]
   def text_tokens_texts
-    @text_tokens_texts ||= linearize(text_tokens).map(&:strip)
+    @text_tokens_texts ||= linearize(text_tokens).map(&:to_s).map(&:strip)
   end
 
   # Splits things requires translations to per-request chunks

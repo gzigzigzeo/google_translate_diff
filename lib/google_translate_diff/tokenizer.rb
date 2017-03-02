@@ -63,6 +63,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
 
   class << self
     def tokenize(value)
+      return [] if value.nil?
       tokenizer = new(value).tap do |h|
         Ox.sax_parse(h, StringIO.new(value))
         h.cut_last_token

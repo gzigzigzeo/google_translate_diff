@@ -42,12 +42,14 @@ RSpec.describe GoogleTranslateDiff::Request do
   end
 
   context "complex structure" do
-    let(:values) { { title: "One", more: { description: "Two" } } }
+    let(:values) { { title: "One", more: { description: "Two" }, skip: nil } }
     let(:options) { { from: :en, to: :ru } }
     let(:api_request) { %w(One Two) }
     let(:api_response) { %w(Один Два) }
 
-    it { is_expected.to eq(title: "Один", more: { description: "Два" }) }
+    it do
+      is_expected.to eq(title: "Один", more: { description: "Два" }, skip: "")
+    end
   end
 
   context "HTML" do
