@@ -14,7 +14,7 @@ class GoogleTranslateDiff::Spacing
 
     def leading(value)
       pos = value =~ /[^[:space:]]+/ui
-      return "" if pos.zero?
+      return "" if pos.nil? || pos.zero?
       value[0..(pos - 1)]
     end
 

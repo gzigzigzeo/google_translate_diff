@@ -2,8 +2,8 @@ require "spec_helper"
 
 RSpec.describe GoogleTranslateDiff::Spacing do
   [
-    ["a   ", "А", "А   "],
-    ["  b ", "Б", "  Б "]
+    ["a   ", "А", "А   ", ""],
+    ["  b ", "Б", "  Б ", ""]
   ].each do |(left, right, result)|
     it { expect(described_class.restore(left, right)).to eq(result) }
   end
