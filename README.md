@@ -61,7 +61,7 @@ GoogleTranslateDiff.cache_store =
 # Optional
 GoogleTranslateDiff.rate_limiter =
   GoogleTranslateDiff::RedisRateLimiter.new(
-    pool, threshold: 8000, interval: 60, namespace: t
+    pool, threshold: 8000, interval: 60, namespace: "t"
   )
 
 GoogleTranslateDiff.translate("test translations", from: "en", to: "es")
