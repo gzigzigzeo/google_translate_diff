@@ -7,6 +7,7 @@ class GoogleTranslateDiff::Chunker
 
   param :values
   option :limit, default: proc { MAX_CHUNK_SIZE }
+  option :count_limit, default: proc { COUNT_LIMIT }
 
   def call
     chunks.map(&:values)
@@ -18,7 +19,7 @@ class GoogleTranslateDiff::Chunker
 
       tail = chunks.last
 
-      if tail.nil? || (size(value) + tail.size > limit)
+      if next_chunk?(tail, value)
         chunks << Chunk.new([], 0)
         tail = chunks.last
       end
@@ -28,6 +29,12 @@ class GoogleTranslateDiff::Chunker
   end
 
   private
+
+  def next_chunk?(tail, value)
+    tail.nil? ||
+      (size(value) + tail.size > limit) ||
+      tail.values.size > count_limit
+  end
 
   def size(text)
     URI.encode(text).size
@@ -43,4 +50,5 @@ class GoogleTranslateDiff::Chunker
   end
 
   MAX_CHUNK_SIZE = 1700
+  COUNT_LIMIT = 120
 end
