@@ -42,5 +42,5 @@ class GoogleTranslateDiff::Chunker
     raise Error, "Too long part #{value.size} > #{limit}" if value.size > limit
   end
 
-  MAX_CHUNK_SIZE = 1800
+  MAX_CHUNK_SIZE = 1700
 end
