@@ -5,6 +5,12 @@ SimpleCov.start
 
 require "google_translate_diff"
 
+Ox.default_options = {
+  mode: :generic,
+  effort: :tolerant,
+  smart: true
+}
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
