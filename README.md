@@ -37,7 +37,7 @@ Or install it yourself as:
 
 ## Usage
 
-*Warning*. Modifies Ox.default_options.
+*Warning*. *Modifies `Ox.default_options`.*
 
 ```ruby
 require "google_translate_diff"
