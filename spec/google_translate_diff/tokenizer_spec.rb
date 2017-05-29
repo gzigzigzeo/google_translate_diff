@@ -49,15 +49,15 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
   end
 
   context "with some markup ending with script and non-ascii" do
-    let(:source) { "альфа<span>браво</span>кило<script>js</script>" }
+    let(:source) { "аль<span>бра</span>кил<script>js</script><style>b</style>" }
     let(:tokens) do
       [
-        ["альфа", :text],
+        ["аль", :text],
         ["<span>", :markup],
-        ["браво", :text],
+        ["бра", :text],
         ["</span>", :markup],
-        ["кило", :text],
-        ["<script>js</script>", :markup]
+        ["кил", :text],
+        ["<script>js</script><style>b</style>", :markup]
       ]
     end
 

@@ -10,11 +10,11 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   attr_reader :texts, :tokens, :prev, :pos
 
   def start_element(name)
-    @skip = true if name == :script
+    @skip = true if SKIP.include?(name)
   end
 
   def end_element(name)
-    @skip = false if name == :script
+    @skip = false if SKIP.include?(name)
   end
 
   def text(value)
@@ -72,4 +72,6 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
       tokenizer.tokens
     end
   end
+
+  SKIP = %i(script style).freeze
 end
