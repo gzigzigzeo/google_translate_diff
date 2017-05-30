@@ -65,7 +65,9 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     def tokenize(value)
       return [] if value.nil?
       tokenizer = new(value).tap do |h|
-        Ox.default_options = { mode: :generic, effort: :tolerant, smart: true }
+        # Ox.default_options = {
+        # mode: :generic, effort: :tolerant, smart: true
+        # }
         Ox.sax_parse(h, StringIO.new(value))
         h.cut_last_token
       end
@@ -73,5 +75,5 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     end
   end
 
-  SKIP = %i(script style).freeze
+  SKIP = %i[script style].freeze
 end

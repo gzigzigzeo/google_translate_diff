@@ -35,8 +35,8 @@ RSpec.describe GoogleTranslateDiff::Request do
   context "complex structure, simple case" do
     let(:values) { { title: "One", description: "Two" } }
     let(:options) { { from: :en, to: :ru } }
-    let(:api_request) { %w(One Two) }
-    let(:api_response) { %w(Один Два) }
+    let(:api_request) { %w[One Two] }
+    let(:api_response) { %w[Один Два] }
 
     it { is_expected.to eq(title: "Один", description: "Два") }
   end
@@ -44,8 +44,8 @@ RSpec.describe GoogleTranslateDiff::Request do
   context "complex structure" do
     let(:values) { { title: "One", more: { description: "Two" }, skip: nil } }
     let(:options) { { from: :en, to: :ru } }
-    let(:api_request) { %w(One Two) }
-    let(:api_response) { %w(Один Два) }
+    let(:api_request) { %w[One Two] }
+    let(:api_response) { %w[Один Два] }
 
     it do
       is_expected.to eq(title: "Один", more: { description: "Два" }, skip: "")
@@ -64,8 +64,8 @@ RSpec.describe GoogleTranslateDiff::Request do
       }
     end
     let(:options) { { from: :en, to: :ru } }
-    let(:api_request) { %w(One Black So Red that) }
-    let(:api_response) { %w(Один Черный Что Кра что) }
+    let(:api_request) { %w[One Black So Red that] }
+    let(:api_response) { %w[Один Черный Что Кра что] }
 
     it do
       is_expected.to eq(

@@ -13,8 +13,8 @@ RSpec.describe GoogleTranslateDiff::Chunker do
   end
 
   context "not splits if fits" do
-    let(:source) { %w(a b c) }
-    let(:chunks) { [%w(a b c)] }
+    let(:source) { %w[a b c] }
+    let(:chunks) { [%w[a b c]] }
 
     it_behaves_like "chunker"
   end
