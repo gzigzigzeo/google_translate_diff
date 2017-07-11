@@ -83,4 +83,25 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
 
     it_behaves_like "tokenizer"
   end
+
+  context "chunks not to be translated" do
+    subject { described_class.tokenize source }
+
+    let(:source) do
+      "Стишок. <span>Бармаглот. </span>" \
+      '<span class="notranslate">Варкалось. Хливкие шорьки</span>'
+    end
+
+    let(:tokens) do
+      [
+        ["Стишок. ", :text],
+        ["<span>", :markup],
+        ["Бармаглот. ", :text],
+        ["</span>", :markup],
+        ['<span class="notranslate">Варкалось. Хливкие шорьки</span>', :text]
+      ]
+    end
+
+    it { is_expected.to eq tokens }
+  end
 end

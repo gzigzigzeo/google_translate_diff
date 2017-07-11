@@ -5,6 +5,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     @skip = false
     @source = source
     @tokens = []
+    @holders = set_holders
   end
 
   attr_reader :texts, :tokens, :prev, :pos
@@ -61,6 +62,22 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     )
   end
 
+  def set_holders
+    HOLD.flat_map { |pattern| @source.scan(pattern) }
+        .uniq
+        .map { |item| [SecureRandom.uuid, item] }
+        .each { |(uuid, item)| @source.gsub!(item, uuid) }
+        .to_h
+  end
+
+  def apply_holders
+    @tokens.each do |token|
+      text = @holders[token.first]
+      next unless text
+      token.replace [text, token.last]
+    end
+  end
+
   class << self
     def tokenize(value)
       return [] if value.nil?
@@ -70,10 +87,12 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
         # }
         Ox.sax_parse(h, StringIO.new(value))
         h.cut_last_token
+        h.apply_holders
       end
       tokenizer.tokens
     end
   end
 
   SKIP = %i[script style].freeze
+  HOLD = [%r{<span class="notranslate">.+<\/span>}].freeze
 end
