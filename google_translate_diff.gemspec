@@ -44,7 +44,7 @@ between revisions of long texts.
   spec.add_development_dependency "simplecov"
 
   spec.add_dependency "google-cloud-translate"
-  spec.add_dependency "ox" #, "< 2.5"
+  spec.add_dependency "ox"
   spec.add_dependency "dry-initializer"
   spec.add_dependency "punkt-segmenter"
 end
