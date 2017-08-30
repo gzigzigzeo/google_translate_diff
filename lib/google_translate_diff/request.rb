@@ -1,5 +1,5 @@
 class GoogleTranslateDiff::Request
-  extend Dry::Initializer::Mixin
+  extend Dry::Initializer
   extend Forwardable
 
   param :values

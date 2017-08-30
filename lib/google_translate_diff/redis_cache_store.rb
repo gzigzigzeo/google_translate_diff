@@ -1,5 +1,5 @@
 class GoogleTranslateDiff::RedisCacheStore
-  extend Dry::Initializer::Mixin
+  extend Dry::Initializer
 
   param :connection_pool
 

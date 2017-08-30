@@ -1,5 +1,5 @@
 class GoogleTranslateDiff::Chunker
-  extend ::Dry::Initializer::Mixin
+  extend ::Dry::Initializer
 
   class Error < StandardError; end
 

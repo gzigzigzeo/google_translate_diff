@@ -1,5 +1,5 @@
 class GoogleTranslateDiff::RedisRateLimiter
-  extend Dry::Initializer::Mixin
+  extend Dry::Initializer
 
   class RateLimitExceeded < StandardError; end
 

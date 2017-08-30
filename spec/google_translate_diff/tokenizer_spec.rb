@@ -2,14 +2,11 @@ require "spec_helper"
 
 RSpec.describe GoogleTranslateDiff::Tokenizer do
   subject do
-    described_class.new(source).tap do |h|
-      Ox.sax_parse(h, StringIO.new(source))
-      h.cut_last_token
-    end
+    described_class.tokenize(source)
   end
 
   shared_examples "tokenizer" do
-    it { expect(subject.tokens).to eq(tokens) }
+    it { expect(subject).to eq(tokens) }
   end
 
   context "pure text" do

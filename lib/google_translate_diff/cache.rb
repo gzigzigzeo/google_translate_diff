@@ -1,5 +1,5 @@
 class GoogleTranslateDiff::Cache
-  extend Dry::Initializer::Mixin
+  extend Dry::Initializer
 
   param :from
   param :to
