@@ -9,6 +9,13 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
     it { expect(subject).to eq(tokens) }
   end
 
+  context "empty" do
+    let(:source) { "" }
+    let(:tokens) { [] }
+
+    it_behaves_like "tokenizer"
+  end
+
   context "pure text" do
     let(:source) { "test\nphrase" }
     let(:tokens) { [[source, :text]] }
@@ -75,6 +82,24 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
         ["Ворчало. ", :text],
         ["Кричало.", :text],
         ["</span>", :markup]
+      ]
+    end
+
+    it_behaves_like "tokenizer"
+  end
+
+  context "notranslate" do
+    let(:source) do
+      "<span class='notranslate'>test</span><b>
+<span class='notranslate'>x</span>y</b>"
+    end
+
+    let(:tokens) do
+      [
+        ["<span class='notranslate'>test</span>", :text],
+        ["<b>", :markup],
+        ["\n<span class='notranslate'>x</span>y", :text],
+        ["</b>", :markup]
       ]
     end
 
