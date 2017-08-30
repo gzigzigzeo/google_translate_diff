@@ -73,5 +73,5 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   end
 
   SKIP = %i[script style].freeze
-  HTML_OPTIONS = { smart: true, skip: :skip_return }.freeze
+  HTML_OPTIONS = { smart: true, skip: :skip_none }.freeze
 end
