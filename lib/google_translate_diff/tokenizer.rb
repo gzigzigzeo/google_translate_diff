@@ -50,6 +50,8 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   private
 
   def sentences(value)
+    return [] if value.empty?
+    
     boundaries =
       Punkt::SentenceTokenizer
       .new(value)
