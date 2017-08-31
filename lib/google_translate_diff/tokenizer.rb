@@ -49,9 +49,10 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
 
   private
 
+  # rubocop: disable Metrics/MethodLength
   def sentences(value)
     return [] if value.empty?
-    
+
     boundaries =
       Punkt::SentenceTokenizer
       .new(value)
@@ -66,6 +67,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
       [value[left..right], :text]
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def raw_tokens
     @indicies.map.with_index do |i, n|
