@@ -51,7 +51,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
 
   # rubocop: disable Metrics/MethodLength
   def sentences(value)
-    return [] if value.empty?
+    return [] if value.strip.empty?
 
     boundaries =
       Punkt::SentenceTokenizer
@@ -96,6 +96,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
       tokenizer = new(value).tap do |h|
         Ox.sax_parse(h, StringIO.new(value), HTML_OPTIONS)
       end
+      puts tokenizer.tokens.inspect
       tokenizer.tokens
     end
   end

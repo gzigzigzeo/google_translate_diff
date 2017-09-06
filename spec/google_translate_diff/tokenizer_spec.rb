@@ -16,6 +16,13 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
     it_behaves_like "tokenizer"
   end
 
+  context "pure crlf" do
+    let(:source) { "<div>\n</div>" }
+    let(:tokens) { [["<div>", :markup], ["</div>", :markup]] }
+
+    it_behaves_like "tokenizer"
+  end
+
   context "pure text" do
     let(:source) { "test\nphrase" }
     let(:tokens) { [[source, :text]] }
