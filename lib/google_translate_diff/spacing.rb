@@ -19,7 +19,7 @@ class GoogleTranslateDiff::Spacing
     end
 
     def trailing(value)
-      pos = value =~ /[[:space:]]+$/ui
+      pos = value =~ /[[:space:]]+\z/ui
       return "" if pos.nil?
       value[pos..-1]
     end
