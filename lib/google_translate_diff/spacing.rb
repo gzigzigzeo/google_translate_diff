@@ -13,13 +13,13 @@ class GoogleTranslateDiff::Spacing
     end
 
     def leading(value)
-      pos = value =~ /[^[:space:]]+/ui
+      pos = value =~ /\A[^[:space:]]+/ui
       return "" if pos.nil? || pos.zero?
       value[0..(pos - 1)]
     end
 
     def trailing(value)
-      pos = value =~ /[[:space:]]+$/ui
+      pos = value =~ /[[:space:]]+\z/ui
       return "" if pos.nil?
       value[pos..-1]
     end
