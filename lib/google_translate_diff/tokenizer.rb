@@ -1,7 +1,9 @@
 class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
+  attr_reader :source
+
   def initialize(source)
     @pos = nil
-    @source = source
+    @source = source.gsub("<br>", "<br />")
     @tokens = []
     @context = []
     @sequence = []
@@ -94,7 +96,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     def tokenize(value)
       return [] if value.nil?
       tokenizer = new(value).tap do |h|
-        Ox.sax_parse(h, StringIO.new(value), HTML_OPTIONS)
+        Ox.sax_parse(h, StringIO.new(h.source), HTML_OPTIONS)
       end
       puts tokenizer.tokens.inspect
       tokenizer.tokens
