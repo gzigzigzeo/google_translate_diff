@@ -112,4 +112,20 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
 
     it_behaves_like "tokenizer"
   end
+
+  context "with <br> tag before closing tag" do
+    let(:source) do
+      "<font size='3'>Смеркалось.<br></font>"
+    end
+
+    let(:tokens) do
+      [
+        ["<font size='3'>", :markup],
+        ["Смеркалось.", :text],
+        ["<br></font>", :markup]
+      ]
+    end
+
+    it_behaves_like "tokenizer"
+  end
 end

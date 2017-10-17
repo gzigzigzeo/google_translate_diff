@@ -2,7 +2,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   def initialize(source)
     @pos = nil
     @source = source
-    @tokens = []
+    @tokens = nil
     @context = []
     @sequence = []
     @indicies = []
@@ -27,14 +27,15 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     @sequence[-1] = :notranslate
   end
 
-  def text(_)
+  def text(value)
+    return if value == ""
     @sequence << (SKIP.include?(@context.last) ? :markup : :text)
     @indicies << @pos - 1
   end
 
   # rubocop:disable Metrics/AbcSize
   def tokens
-    raw_tokens.each_with_object([]) do |token, tokens|
+    @tokens ||= raw_tokens.each_with_object([]) do |token, tokens|
       if tokens.empty?
         tokens << token
       elsif tokens.last[1] == token[1]
@@ -70,7 +71,7 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   # rubocop:enable Metrics/MethodLength
 
   def raw_tokens
-    @indicies.map.with_index do |i, n|
+    @raw_tokens ||= @indicies.map.with_index do |i, n|
       first = i
       last = (@indicies[n + 1] || 0) - 1
       value = fix_utf(@source.byteslice(first..last))
