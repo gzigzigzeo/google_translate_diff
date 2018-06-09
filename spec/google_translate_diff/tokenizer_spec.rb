@@ -128,4 +128,22 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
 
     it_behaves_like "tokenizer"
   end
+
+  context "with <?xml:...> tag" do
+    let(:source) do
+      "Hey!<br />Look!" \
+      "<?xml:namespace ns=\"urn:office\" />"
+    end
+
+    let(:tokens) do
+      [
+        ["Hey!", :text],
+        ["<br />", :markup],
+        ["Look!", :text],
+        ["<?xml:namespace ns=\"urn:office\" />", :markup]
+      ]
+    end
+
+    it_behaves_like "tokenizer"
+  end
 end
