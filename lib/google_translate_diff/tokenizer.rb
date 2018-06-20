@@ -8,16 +8,20 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     @indicies = []
   end
 
+  def instruct(target)
+    start_markup(target)
+  end
+
+  def end_instruct(target)
+    end_markup(target)
+  end
+
   def start_element(name)
-    @context << name
-    @sequence << :markup
-    @indicies << @pos - 1
+    start_markup(name)
   end
 
   def end_element(name)
-    @context.pop
-    @sequence << (nontranslate?(name) ? :notranslate : :markup)
-    @indicies << @pos - 1 unless @pos == @source.bytesize
+    end_markup(name)
   end
 
   def attr(name, value)
@@ -91,13 +95,24 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     @sequence[-2] == :notranslate && name == :span
   end
 
+  def start_markup(name)
+    @context << name
+    @sequence << :markup
+    @indicies << @pos - 1
+  end
+
+  def end_markup(name)
+    @context.pop
+    @sequence << (nontranslate?(name) ? :notranslate : :markup)
+    @indicies << @pos - 1 unless @pos == @source.bytesize
+  end
+
   class << self
     def tokenize(value)
       return [] if value.nil?
       tokenizer = new(value).tap do |h|
         Ox.sax_parse(h, StringIO.new(value), HTML_OPTIONS)
       end
-      puts tokenizer.tokens.inspect
       tokenizer.tokens
     end
   end
