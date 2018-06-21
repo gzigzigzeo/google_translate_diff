@@ -146,4 +146,20 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
 
     it_behaves_like "tokenizer"
   end
+
+  context "bizarre sentences" do
+    let(:source) do
+      "Набор «Солнечная механика» от 4М — это 6 экспериментов." \
+      "\n\nЮному изобретателю предстоит воочию посмотреть на чудеса."
+    end
+
+    let(:tokens) do
+      [
+        ["Набор «Солнечная механика» от 4М — это 6 экспериментов.\n\n", :text],
+        ["Юному изобретателю предстоит воочию посмотреть на чудеса.", :text]
+      ]
+    end
+
+    it_behaves_like "tokenizer"
+  end
 end

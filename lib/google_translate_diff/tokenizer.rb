@@ -37,22 +37,29 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     @indicies << @pos - 1
   end
 
-  # rubocop:disable Metrics/AbcSize
   def tokens
-    @tokens ||= raw_tokens.each_with_object([]) do |token, tokens|
-      if tokens.empty?
+    @tokens ||= token_sequences_joined.tap { |tokens| make_sentences_from_last_token(tokens) }
+  end
+
+  private
+
+  def token_sequences_joined
+    raw_tokens.each_with_object([]) do |token, tokens|
+      if tokens.empty? # Initial state
         tokens << token
-      elsif tokens.last[1] == token[1]
+      elsif tokens.last[1] == token[1] # Join series of tokens of the same type into one
         tokens.last[0].concat(token[0])
-      else
-        tokens.concat(sentences(tokens.pop[0])) if tokens.last[1] == :text
+      else # If token before :markup is :text we need to split it into sentences
+        make_sentences_from_last_token(tokens)
         tokens << token
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
-  private
+  def make_sentences_from_last_token(tokens)
+    return if tokens.empty?
+    tokens.concat(sentences(tokens.pop[0])) if tokens.last[1] == :text
+  end
 
   # rubocop: disable Metrics/MethodLength
   def sentences(value)
