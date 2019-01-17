@@ -25,9 +25,10 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   end
 
   def attr(name, value)
-    unless @context.last == :span && name == :class && value == "notranslate"
-      return
-    end
+    return unless @context.last == :span
+    return unless name == :class && value == "notranslate"
+    return if notranslate?
+
     @sequence[-1] = :notranslate
   end
 
@@ -38,7 +39,8 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   end
 
   def tokens
-    @tokens ||= token_sequences_joined.tap { |tokens| make_sentences_from_last_token(tokens) }
+    @tokens ||= token_sequences_joined
+      .tap { |tokens| make_sentences_from_last_token(tokens) }
   end
 
   private
@@ -47,9 +49,11 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
     raw_tokens.each_with_object([]) do |token, tokens|
       if tokens.empty? # Initial state
         tokens << token
-      elsif tokens.last[1] == token[1] # Join series of tokens of the same type into one
+      elsif tokens.last[1] == token[1]
+        # Join series of tokens of the same type into one
         tokens.last[0].concat(token[0])
-      else # If token before :markup is :text we need to split it into sentences
+      else
+        # If token before :markup is :text we need to split it into sentences
         make_sentences_from_last_token(tokens)
         tokens << token
       end
@@ -81,36 +85,47 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   end
   # rubocop:enable Metrics/MethodLength
 
+  # Whether the sequence is between `:notranslate` and `:end_notranslate`
+  def notranslate?
+    @sequence.select { |item| item[/notranslate/] }.last == :notranslate
+  end
+
+  # Returns the item for last opened span 
+  def end_span
+    return :markup unless notranslate?
+    opened_spans = @sequence
+      .reverse
+      .take_while { |item| item != :notranslate }
+      .map { |item| { span: 1, end_span: -1 }.fetch(item, 0) }
+      .reduce(0, :+)
+
+    opened_spans.positive? ? :end_span : :end_notranslate
+  end
+
   def raw_tokens
     @raw_tokens ||= @indicies.map.with_index do |i, n|
       first = i
       last = (@indicies[n + 1] || 0) - 1
       value = fix_utf(@source.byteslice(first..last))
       type = @sequence[n]
-      type = :text if type == :notranslate
+      type = :text if INNER_SPANS.include?(type)
       [value, type]
     end
   end
 
   def fix_utf(value)
-    value.encode(
-      "UTF-8", undef: :replace, invalid: :replace, replace: " "
-    )
-  end
-
-  def nontranslate?(name)
-    @sequence[-2] == :notranslate && name == :span
+    value.encode("UTF-8", undef: :replace, invalid: :replace, replace: " ")
   end
 
   def start_markup(name)
     @context << name
-    @sequence << :markup
+    @sequence << (notranslate? ? (name == :span ? :span : :text) : :markup)
     @indicies << @pos - 1
   end
 
   def end_markup(name)
     @context.pop
-    @sequence << (nontranslate?(name) ? :notranslate : :markup)
+    @sequence << (notranslate? ? (name == :span ? end_span : :text) : :markup)
     @indicies << @pos - 1 unless @pos == @source.bytesize
   end
 
@@ -125,5 +140,6 @@ class GoogleTranslateDiff::Tokenizer < ::Ox::Sax
   end
 
   SKIP = %i[script style].freeze
+  INNER_SPANS = %i[notranslate span end_span end_notranslate].freeze
   HTML_OPTIONS = { smart: true, skip: :skip_none }.freeze
 end
