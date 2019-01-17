@@ -113,6 +113,38 @@ RSpec.describe GoogleTranslateDiff::Tokenizer do
     it_behaves_like "tokenizer"
   end
 
+  context "notranslate inside another span" do
+    let(:source) do
+      "<span><span class='notranslate'>foo<span>bar<br></span>baz</span></span>"
+    end
+
+    let(:tokens) do
+      [
+        ["<span>", :markup],
+        ["<span class='notranslate'>foo<span>bar<br></span>baz</span>", :text],
+        ["</span>", :markup]
+      ]
+    end
+
+    it_behaves_like "tokenizer"
+  end
+
+  context "notranslate inside another notranslate" do
+    let(:source) do
+      "<span class='notranslate'>foo" \
+      "<span class='notranslate'>bar</span>baz" \
+      "</span>"
+    end
+
+    let(:tokens) do
+      [
+        [source, :text]
+      ]
+    end
+
+    it_behaves_like "tokenizer"
+  end
+
   context "with <br> tag before closing tag" do
     let(:source) do
       "<font size='3'>Смеркалось.<br></font>"
