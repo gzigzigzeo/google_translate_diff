@@ -1,3 +1,3 @@
 module GoogleTranslateDiff
-  VERSION = "1.0.10".freeze
+  VERSION = "1.0.11".freeze
 end
